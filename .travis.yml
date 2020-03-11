@@ -23,9 +23,9 @@ jdk:
     - openjdk13
 
 install:
-    - wget https://ci.adoptopenjdk.net/view/Dependencies/job/jtreg/lastSuccessfulBuild/artifact/jtreg-5.0-b01.tar.gz -O $HOME/jtreg.tar.gz
-    - tar -xvf $HOME/jtreg.tar.gz -C $HOME
-    - export JT_HOME=$HOME/jtreg
+    - wget https://ci.adoptopenjdk.net/view/Dependencies/job/jtreg/lastSuccessfulBuild/artifact/jtreg-5.0-b01.tar.gz -O $TRAVIS_BUILD_DIR/jtreg.tar.gz
+    - tar -xvf $TRAVIS_BUILD_DIR/jtreg.tar.gz -C $TRAVIS_BUILD_DIR
+    - export JT_HOME=$TRAVIS_BUILD_DIR/jtreg
 
 script:
   - sh configure
