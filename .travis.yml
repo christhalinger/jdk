@@ -67,9 +67,11 @@ jobs:
         - make test-image
 
     - stage: test
+      os: linux
       env: TEST="jdk_lang"
       script: make run-test TEST="$TEST"
     - stage: test
+      os: linux
       env: TEST="jdk_util"
       script: make run-test TEST="$TEST"
 
@@ -82,8 +84,10 @@ jobs:
         - make test-image
 
     - stage: test
+      os: osx
       env: TEST="jdk_lang"
       script: make run-test TEST="$TEST"
     - stage: test
+      os: osx
       env: TEST="jdk_util"
       script: make run-test TEST="$TEST"
