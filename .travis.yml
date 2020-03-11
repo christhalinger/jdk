@@ -12,6 +12,8 @@ notifications:
 
 env:
   global:
+    - JOBS=4
+    - TEST_JOBS=4
     # include $HOME/.local/bin for `aws`
     - PATH=$HOME/.local/bin:$PATH
 
@@ -48,8 +50,6 @@ jobs:
     - stage: build
       os: linux
       dist: xenial
-#    - os: osx
-#      osx_image: xcode11.1
       addons:
         apt:
           packages:
@@ -62,9 +62,25 @@ jobs:
             - libxt-dev
             - libxtst-dev
       script:
-        - sh configure
-        - make images LOG=info
-        - make test-image LOG=info
+        - sh configure --with-log=info --with-jobs=$JOBS --with-test-jobs=$TEST_JOBS
+        - make images
+        - make test-image
+
+    - stage: test
+      env: TEST="jdk_lang"
+      script: make run-test TEST="$TEST"
+    - stage: test
+      env: TEST="jdk_util"
+      script: make run-test TEST="$TEST"
+
+    - stage: build
+      os: osx
+      osx_image: xcode11.1
+      script:
+        - sh configure --with-log=info --with-jobs=$JOBS --with-test-jobs=$TEST_JOBS
+        - make images
+        - make test-image
+
     - stage: test
       env: TEST="jdk_lang"
       script: make run-test TEST="$TEST"
