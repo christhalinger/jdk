@@ -9,7 +9,7 @@ on:
 #    branches: [ master ]
 
 env:
-  JT_HOME: $HOME/jtreg
+  JT_HOME: ${{env.HOME}}/jtreg
   CONF_NAME: output
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -46,7 +46,7 @@ jobs:
 
       - name: Build
         run: |
-          sh configure --with-conf-name=$CONF_NAME --with-log=info
+          sh configure --with-conf-name=${{env.CONF_NAME}} --with-log=info
           make product-bundles
 
       - name: Test jdk_lang
@@ -56,4 +56,4 @@ jobs:
         uses: actions/upload-artifact@v1.0.0
         with:
           name: bundles
-          path: build/$CONF_NAME/bundles/
+          path: build/${{env.CONF_NAME}}/bundles/
