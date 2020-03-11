@@ -5,12 +5,13 @@ dist: xenial
 addons:
   apt:
     packages:
+      - libcups2-dev
       - libx11-dev
       - libxext-dev
-      - libxrender-dev
       - libxrandr-dev
-      - libxtst-dev
+      - libxrender-dev
       - libxt-dev
+      - libxtst-dev
 
 jdk:
     - openjdk13
