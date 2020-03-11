@@ -55,22 +55,23 @@ before_script:
           ;;
       esac
 
-jobs:
+matrix:
   include:
     - os: linux
       dist: xenial
 #    - os: osx
 #      osx_image: xcode11.1
+
+jobs:
+  include:
     - stage: build
       script:
         - sh configure
         - make images LOG=info
         - make test-image LOG=info
     - stage: test
-      script: make run-test TEST="jdk_lang"
+      env: TEST="jdk_lang"
+      script: make run-test TEST="$TEST"
     - stage: test
-      script: make run-test TEST="jdk_util"
-    - stage: test
-      script: make run-test TEST="jdk_math"
-    - stage: test
-      script: make run-test TEST="jdk_io"
+      env: TEST="jdk_util"
+      script: make run-test TEST="$TEST"
