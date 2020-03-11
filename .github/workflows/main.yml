@@ -18,6 +18,7 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - name: Set up environment variables
+        run: echo $GITHUB_RUN_ID
         env:
           JT_HOME: $HOME/jtreg
           CONF_NAME: output
@@ -39,7 +40,7 @@ jobs:
       - name: Clone workspace
         uses: actions/checkout@v2
 
-      - name: Download jtreg
+      - name: Install jtreg
         run: |
           wget https://ci.adoptopenjdk.net/view/Dependencies/job/jtreg/lastSuccessfulBuild/artifact/jtreg-5.0-b01.tar.gz -O $HOME/jtreg.tar.gz
           tar -xvf $HOME/jtreg.tar.gz -C $HOME
