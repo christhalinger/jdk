@@ -59,14 +59,24 @@ jobs:
   include:
     - os: linux
       dist: xenial
-    - os: osx
-      osx_image: xcode11.1
-    - stage: build
+      stage: build
       script:
         - sh configure
         - make images LOG=info
         - make test-image LOG=info
-    - stage: test
+      stage: test
+      script: make run-test TEST="jdk_lang"
+      script: make run-test TEST="jdk_util"
+      script: make run-test TEST="jdk_math"
+      script: make run-test TEST="jdk_io"
+    - os: osx
+      osx_image: xcode11.1
+      stage: build
+      script:
+        - sh configure
+        - make images LOG=info
+        - make test-image LOG=info
+      stage: test
       script: make run-test TEST="jdk_lang"
       script: make run-test TEST="jdk_util"
       script: make run-test TEST="jdk_math"
