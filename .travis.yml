@@ -1,17 +1,5 @@
 language: java
 
-addons:
-  apt:
-    packages:
-      - libasound2-dev
-      - libcups2-dev
-      - libx11-dev
-      - libxext-dev
-      - libxrandr-dev
-      - libxrender-dev
-      - libxt-dev
-      - libxtst-dev
-
 jdk:
     - openjdk13
 
@@ -57,11 +45,22 @@ before_script:
 
 jobs:
   include:
-    - os: linux
+    - stage: build
+      os: linux
       dist: xenial
 #    - os: osx
 #      osx_image: xcode11.1
-    - stage: build
+      addons:
+        apt:
+          packages:
+            - libasound2-dev
+            - libcups2-dev
+            - libx11-dev
+            - libxext-dev
+            - libxrandr-dev
+            - libxrender-dev
+            - libxt-dev
+            - libxtst-dev
       script:
         - sh configure
         - make images LOG=info
