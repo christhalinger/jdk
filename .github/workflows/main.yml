@@ -22,8 +22,8 @@ jobs:
           JT_HOME: $HOME/jtreg
           CONF_NAME: output
         run: |
-          echo JT_HOME: $JT_HOME
-          echo CONF_NAME: $CONF_NAME
+          echo JT_HOME: ${{env.JT_HOME}}
+          echo CONF_NAME: ${{env.CONF_NAME}}
           
       - name: Install dependencies
         uses: mstksg/get-package@v1
@@ -49,7 +49,7 @@ jobs:
 
       - name: Build
         run: |
-          sh configure --with-conf-name=$CONF_NAME --with-log=info
+          sh configure --with-conf-name=${{env.CONF_NAME}} --with-log=info
           make product-bundles
 
       - name: Test jdk_lang
@@ -59,4 +59,4 @@ jobs:
         uses: actions/upload-artifact@v1.0.0
         with:
           name: bundles
-          path: build/$CONF_NAME/bundles/
+          path: build/${{env.CONF_NAME}}/bundles/
