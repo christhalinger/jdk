@@ -46,7 +46,7 @@ jobs:
 
       - name: Build
         run: |
-          sh configure --with-conf-name=${{env.CONF_NAME}} --with-log=info
+          sh configure --with-conf-name=${{env.CONF_NAME}} --with-log=info --with-jvm-features=-epsilongc,-shenandoahgc
           make product-bundles
 
       - name: Test jdk_lang
