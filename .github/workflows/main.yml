@@ -16,11 +16,20 @@ env:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+  download:
+    runs-on: [ ubuntu-18.04 ]
+    steps:
+      - run: wget -O - ${{env.JTREG_URL}} | tar -xzf -
+      - uses: actions/upload-artifact@v1.0.0
+        with:
+          name: jtreg
+          path: jtreg/
+
   build:
+    needs: [ download ]
     strategy:
       matrix:
         os: [ ubuntu-18.04, macos-10.15 ]
-
     runs-on: ${{matrix.os}}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -34,7 +43,9 @@ jobs:
       - uses: actions/setup-java@v1.3.0
         with:
           java-version: 13
-      - run: wget -O - ${{env.JTREG_URL}} | tar -xzf -
+      - uses: actions/download-artifact@v1.0.0
+        with:
+          name: jtreg
 
       - run: sh configure --with-conf-name=${{env.CONF_NAME}} --with-log=info --with-jtreg=$PWD/jtreg --with-jvm-features=-epsilongc,-shenandoahgc --with-jobs=${{env.JOBS}} --with-test-jobs=${{env.TEST_JOBS}}
       - run: make jdk-image
@@ -46,17 +57,19 @@ jobs:
           path: build/${{env.CONF_NAME}}/images/
           
   test-jdk_lang:
+    needs: [ build ]
     strategy:
       matrix:
         os: [ ubuntu-18.04, macos-10.15 ]
     runs-on: ${{matrix.os}}
-    needs: [ build ]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-java@v1.3.0
         with:
           java-version: 13
-      - run: wget -O - ${{env.JTREG_URL}} | tar -xzf -
+      - uses: actions/download-artifact@v1.0.0
+        with:
+          name: jtreg
       - run: sh configure --with-conf-name=${{env.CONF_NAME}} --with-log=info --with-jtreg=$PWD/jtreg --with-jvm-features=-epsilongc,-shenandoahgc --with-jobs=${{env.JOBS}} --with-test-jobs=${{env.TEST_JOBS}}
       - uses: actions/download-artifact@v1.0.0
         with:
@@ -64,17 +77,19 @@ jobs:
       - run: make run-test-only TEST="jdk_lang"
 
   test-jdk_util:
+    needs: [ build ]
     strategy:
       matrix:
         os: [ ubuntu-18.04, macos-10.15 ]
     runs-on: ${{matrix.os}}
-    needs: [ build ]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-java@v1.3.0
         with:
           java-version: 13
-      - run: wget -O - ${{env.JTREG_URL}} | tar -xzf -
+      - uses: actions/download-artifact@v1.0.0
+        with:
+          name: jtreg
       - run: sh configure --with-conf-name=${{env.CONF_NAME}} --with-log=info --with-jtreg=$PWD/jtreg --with-jvm-features=-epsilongc,-shenandoahgc --with-jobs=${{env.JOBS}} --with-test-jobs=${{env.TEST_JOBS}}
       - uses: actions/download-artifact@v1.0.0
         with:
