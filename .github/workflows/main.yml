@@ -17,6 +17,19 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+
+    - uses: mstksg/get-package@v1
+      with:
+        # Space-separated list of packages to install using brew install.  Will only run if on OSX.
+        brew: # optional
+    
+        # Space-separated list of packages to install using apt-get.  Will only run if on ubuntu.
+        apt-get: libasound2-dev libcups2-dev libx11-dev libxext-dev libxrandr-dev libxrender-dev libxt-dev libxtst-dev
+
+    - uses: actions/setup-java@v1.3.0
+      with:
+        java-version: 13
+
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
 
