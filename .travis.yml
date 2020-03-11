@@ -1,12 +1,5 @@
 language: java
 
-jobs:
-  include:
-    - os: linux
-      dist: xenial
-    - os: osx
-      osx_image: xcode11.1
-
 addons:
   apt:
     packages:
@@ -64,6 +57,10 @@ before_script:
 
 jobs:
   include:
+    - os: linux
+      dist: xenial
+    - os: osx
+      osx_image: xcode11.1
     - stage: build
       script:
         - sh configure
