@@ -68,6 +68,9 @@ jobs:
         - make test-image LOG=info
     - stage: test
       script: make run-test TEST="jdk_lang"
+    - stage: test
       script: make run-test TEST="jdk_util"
+    - stage: test
       script: make run-test TEST="jdk_math"
+    - stage: test
       script: make run-test TEST="jdk_io"
