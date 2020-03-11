@@ -23,8 +23,8 @@ jdk:
     - openjdk13
 
 install:
-    - wget https://ci.adoptopenjdk.net/view/Dependencies/job/jtreg/lastSuccessfulBuild/artifact/jtreg-5.0-b01.tar.gz
-    - tar -xvf jtreg-5.0-b01.tar.gz
+    - wget https://ci.adoptopenjdk.net/view/Dependencies/job/jtreg/lastSuccessfulBuild/artifact/jtreg-5.0-b01.tar.gz -O $HOME/jtreg.tar.gz
+    - tar -C $HOME -xvf jtreg.tar.gz
     - export JT_HOME=$HOME/jtreg
 
 script:
