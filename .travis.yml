@@ -55,15 +55,12 @@ before_script:
           ;;
       esac
 
-matrix:
+jobs:
   include:
     - os: linux
       dist: xenial
 #    - os: osx
 #      osx_image: xcode11.1
-
-jobs:
-  include:
     - stage: build
       script:
         - sh configure
