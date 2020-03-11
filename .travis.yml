@@ -63,7 +63,7 @@ jobs:
             - libxrender-dev
             - libxt-dev
             - libxtst-dev
-      env: TARGET="jdk-image"
+      env: TARGET="product-bundles"
       script:
         - sh configure --with-log=info --with-jobs=$JOBS --with-test-jobs=$TEST_JOBS
         - make $TARGET
@@ -82,7 +82,7 @@ jobs:
             - libxrender-dev
             - libxt-dev
             - libxtst-dev
-      env: TARGET="test-image"
+      env: TARGET="test-bundles"
       script:
         - sh configure --with-log=info --with-jobs=$JOBS --with-test-jobs=$TEST_JOBS
         - make $TARGET
@@ -101,7 +101,7 @@ jobs:
     - stage: build
       os: osx
       osx_image: xcode11.1
-      env: TARGET="jdk-image"
+      env: TARGET="product-bundles"
       script:
         - sh configure --with-log=info --with-jobs=$JOBS --with-test-jobs=$TEST_JOBS
         - make $TARGET
@@ -109,7 +109,7 @@ jobs:
     - stage: build
       os: osx
       osx_image: xcode11.1
-      env: TARGET="test-image"
+      env: TARGET="test-bundles"
       script:
         - sh configure --with-log=info --with-jobs=$JOBS --with-test-jobs=$TEST_JOBS
         - make $TARGET
