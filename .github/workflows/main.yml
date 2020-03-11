@@ -18,10 +18,12 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - name: Set up environment variables
-        run: echo $GITHUB_RUN_ID
         env:
           JT_HOME: $HOME/jtreg
           CONF_NAME: output
+        run: |
+          echo JT_HOME: $JT_HOME
+          echo CONF_NAME: $CONF_NAME
           
       - name: Install dependencies
         uses: mstksg/get-package@v1
