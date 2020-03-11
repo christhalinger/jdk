@@ -22,6 +22,13 @@ addons:
 jdk:
     - openjdk13
 
+notifications:
+  email:
+    recipients:
+      - cthalinger@twitter.com
+    on_success: never
+    on_failure: always
+
 install:
   - wget https://ci.adoptopenjdk.net/view/Dependencies/job/jtreg/lastSuccessfulBuild/artifact/jtreg-5.0-b01.tar.gz -O $TRAVIS_BUILD_DIR/jtreg.tar.gz
   - tar -xvf $TRAVIS_BUILD_DIR/jtreg.tar.gz -C $TRAVIS_BUILD_DIR
