@@ -17,8 +17,8 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-
-    - uses: mstksg/get-package@v1
+    - name: Install dependencies
+      uses: mstksg/get-package@v1
       with:
         # Space-separated list of packages to install using brew install.  Will only run if on OSX.
         brew: # optional
@@ -26,12 +26,19 @@ jobs:
         # Space-separated list of packages to install using apt-get.  Will only run if on ubuntu.
         apt-get: libasound2-dev libcups2-dev libx11-dev libxext-dev libxrandr-dev libxrender-dev libxt-dev libxtst-dev
 
-    - uses: actions/setup-java@v1.3.0
+    - name: Install boot JDK
+      uses: actions/setup-java@v1.3.0
       with:
         java-version: 13
 
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v2
+    - name: Clone workspace
+      uses: actions/checkout@v2
+
+    - name: Download jtreg
+      run: |
+        wget https://ci.adoptopenjdk.net/view/Dependencies/job/jtreg/lastSuccessfulBuild/artifact/jtreg-5.0-b01.tar.gz -O $HOME/jtreg.tar.gz
+        tar -xvf $HOME/jtreg.tar.gz -C $HOME
+        export JT_HOME=$HOME/jtreg
 
     - name: Build
       run: |
