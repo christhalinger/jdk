@@ -34,7 +34,7 @@ jobs:
       - uses: actions/setup-java@v1.3.0
         with:
           java-version: 13
-      - run: wget -O - ${{env.JTREG_URL}} | tar -xvf -
+      - run: wget -O - ${{env.JTREG_URL}} | tar -xzf -
 
       - run: sh configure --with-conf-name=${{env.CONF_NAME}} --with-log=info --with-jtreg=$PWD/jtreg --with-jvm-features=-epsilongc,-shenandoahgc --with-jobs=${{env.JOBS}} --with-test-jobs=${{env.TEST_JOBS}}
       - run: make jdk-image
@@ -56,7 +56,7 @@ jobs:
       - uses: actions/setup-java@v1.3.0
         with:
           java-version: 13
-      - run: wget -O - ${{env.JTREG_URL}} | tar -xvf -
+      - run: wget -O - ${{env.JTREG_URL}} | tar -xzf -
       - run: sh configure --with-conf-name=${{env.CONF_NAME}} --with-log=info --with-jtreg=$PWD/jtreg --with-jvm-features=-epsilongc,-shenandoahgc --with-jobs=${{env.JOBS}} --with-test-jobs=${{env.TEST_JOBS}}
       - uses: actions/download-artifact@v1.0.0
         with:
@@ -74,7 +74,7 @@ jobs:
       - uses: actions/setup-java@v1.3.0
         with:
           java-version: 13
-      - run: wget -O - ${{env.JTREG_URL}} | tar -xvf -
+      - run: wget -O - ${{env.JTREG_URL}} | tar -xzf -
       - run: sh configure --with-conf-name=${{env.CONF_NAME}} --with-log=info --with-jtreg=$PWD/jtreg --with-jvm-features=-epsilongc,-shenandoahgc --with-jobs=${{env.JOBS}} --with-test-jobs=${{env.TEST_JOBS}}
       - uses: actions/download-artifact@v1.0.0
         with:
