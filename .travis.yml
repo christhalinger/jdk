@@ -30,5 +30,5 @@ install:
 script:
   - sh configure
   - make images LOG=info
-  - make test-image
+  - make test-image LOG=info
   - make run-test-jdk_lang
