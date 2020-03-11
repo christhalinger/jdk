@@ -20,16 +20,13 @@ jobs:
       matrix:
         os: [ ubuntu-18.04, macos-10.15 ]
 
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{matrix.os}}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: mstksg/get-package@v1
         with:
-          # Space-separated list of packages to install using brew install.  Will only run if on OSX.
           #brew: # optional
-    
-          # Space-separated list of packages to install using apt-get.  Will only run if on ubuntu.
           apt-get: libasound2-dev libcups2-dev libx11-dev libxext-dev libxrandr-dev libxrender-dev libxt-dev libxtst-dev
 
       - uses: actions/setup-java@v1.3.0
@@ -43,41 +40,41 @@ jobs:
           wget https://ci.adoptopenjdk.net/view/Dependencies/job/jtreg/lastSuccessfulBuild/artifact/jtreg-5.0-b01.tar.gz -O $HOME/jtreg.tar.gz
           tar -xvf $HOME/jtreg.tar.gz -C $HOME
 
-      - run: sh configure --with-conf-name=${{ env.CONF_NAME }} --with-log=info --with-jtreg=$HOME/jtreg --with-jvm-features=-epsilongc,-shenandoahgc --with-jobs=${{env.JOBS}} --with-test-jobs=${{env.TEST_JOBS}}
+      - run: sh configure --with-conf-name=${{env.CONF_NAME}} --with-log=info --with-jtreg=$HOME/jtreg --with-jvm-features=-epsilongc,-shenandoahgc --with-jobs=${{env.JOBS}} --with-test-jobs=${{env.TEST_JOBS}}
       - run: make jdk-image
       - run: make test-image
           
       - uses: actions/upload-artifact@v1.0.0
         with:
-          name: images-${{ matrix.os }}
-          path: build/${{ env.CONF_NAME }}/images/
+          name: images-${{matrix.os}}
+          path: build/${{env.CONF_NAME}}/images/
           
   test-jdk_lang:
     strategy:
       matrix:
         os: [ ubuntu-18.04, macos-10.15 ]
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{matrix.os}}
     needs: [ build ]
     steps:
       - uses: actions/checkout@v2
-      - run: sh configure --with-conf-name=${{ env.CONF_NAME }} --with-log=info --with-jtreg=$HOME/jtreg --with-jvm-features=-epsilongc,-shenandoahgc --with-jobs=${{env.JOBS}} --with-test-jobs=${{env.TEST_JOBS}}
+      - run: sh configure --with-conf-name=${{env.CONF_NAME}} --with-log=info --with-jtreg=$HOME/jtreg --with-jvm-features=-epsilongc,-shenandoahgc --with-jobs=${{env.JOBS}} --with-test-jobs=${{env.TEST_JOBS}}
       - uses: actions/download-artifact@v1.0.0
         with:
-          name: images-${{ matrix.os }}
-          path: build/${{ env.CONF_NAME }}/images/
+          name: images-${{matrix.os}}
+          path: build/${{env.CONF_NAME}}/images/
       - run: make run-test-only TEST="jdk_lang"
 
   test-jdk_util:
     strategy:
       matrix:
         os: [ ubuntu-18.04, macos-10.15 ]
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{matrix.os}}
     needs: [ build ]
     steps:
       - uses: actions/checkout@v2
-      - run: sh configure --with-conf-name=${{ env.CONF_NAME }} --with-log=info --with-jtreg=$HOME/jtreg --with-jvm-features=-epsilongc,-shenandoahgc --with-jobs=${{env.JOBS}} --with-test-jobs=${{env.TEST_JOBS}}
+      - run: sh configure --with-conf-name=${{env.CONF_NAME}} --with-log=info --with-jtreg=$HOME/jtreg --with-jvm-features=-epsilongc,-shenandoahgc --with-jobs=${{env.JOBS}} --with-test-jobs=${{env.TEST_JOBS}}
       - uses: actions/download-artifact@v1.0.0
         with:
-          name: images-${{ matrix.os }}
-          path: build/${{ env.CONF_NAME }}/images/
+          name: images-${{matrix.os}}
+          path: build/${{env.CONF_NAME}}/images/
       - run: make run-test-only TEST="jdk_util"
