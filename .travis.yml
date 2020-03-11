@@ -63,15 +63,35 @@ jobs:
             - libxrender-dev
             - libxt-dev
             - libxtst-dev
+      env: TARGET="jdk-image"
       script:
         - sh configure --with-log=info --with-jobs=$JOBS --with-test-jobs=$TEST_JOBS
-        - make images
-        - make test-image
+        - make $TARGET
+
+    - stage: build
+      os: linux
+      dist: xenial
+      addons:
+        apt:
+          packages:
+            - libasound2-dev
+            - libcups2-dev
+            - libx11-dev
+            - libxext-dev
+            - libxrandr-dev
+            - libxrender-dev
+            - libxt-dev
+            - libxtst-dev
+      env: TARGET="test-image"
+      script:
+        - sh configure --with-log=info --with-jobs=$JOBS --with-test-jobs=$TEST_JOBS
+        - make $TARGET
 
     - stage: test
       os: linux
       env: TEST="jdk_lang"
       script: make run-test TEST="$TEST"
+
     - stage: test
       os: linux
       env: TEST="jdk_util"
@@ -81,16 +101,25 @@ jobs:
     - stage: build
       os: osx
       osx_image: xcode11.1
+      env: TARGET="jdk-image"
       script:
         - sh configure --with-log=info --with-jobs=$JOBS --with-test-jobs=$TEST_JOBS
-        - make images
-        - make test-image
+        - make $TARGET
+
+    - stage: build
+      os: osx
+      osx_image: xcode11.1
+      env: TARGET="test-image"
+      script:
+        - sh configure --with-log=info --with-jobs=$JOBS --with-test-jobs=$TEST_JOBS
+        - make $TARGET
 
     - stage: test
       os: osx
       osx_image: xcode11.1
       env: TEST="jdk_lang"
       script: make run-test TEST="$TEST"
+
     - stage: test
       os: osx
       osx_image: xcode11.1
