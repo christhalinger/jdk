@@ -2,11 +2,19 @@ language: java
 
 dist: xenial
 
+addons:
+  apt:
+    packages:
+      - libx11-dev
+      - libxext-dev
+      - libxrender-dev
+      - libxrandr-dev
+      - libxtst-dev
+      - libxt-dev
+
 jdk:
     - openjdk13
 
 script:
-  - echo ${JAVA_HOME}
-  - ${JAVA_HOME}/bin/java -version
   - sh configure
   - make images LOG=debug
