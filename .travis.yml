@@ -1,6 +1,11 @@
 language: java
 
-dist: xenial
+jobs:
+  include:
+    - os: linux
+      dist: xenial
+    - os: osx
+      osx_image: xcode11.1
 
 addons:
   apt:
