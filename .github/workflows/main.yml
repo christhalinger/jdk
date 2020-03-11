@@ -44,11 +44,14 @@ jobs:
           wget https://ci.adoptopenjdk.net/view/Dependencies/job/jtreg/lastSuccessfulBuild/artifact/jtreg-5.0-b01.tar.gz -O $HOME/jtreg.tar.gz
           tar -xvf $HOME/jtreg.tar.gz -C $HOME
 
-      - name: Build
+      - name: Build product bundles
         run: |
           sh configure --with-conf-name=${{env.CONF_NAME}} --with-log=info --with-jvm-features=-epsilongc,-shenandoahgc
           make product-bundles
 
+      - name: Build test bundles
+        run: make test-bundles
+          
       - name: Test jdk_lang
         run: make run-test TEST="jdk_lang"
       
