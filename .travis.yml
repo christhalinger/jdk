@@ -29,10 +29,22 @@ notifications:
     on_success: never
     on_failure: always
 
+env:
+  global:
+    # include $HOME/.local/bin for `aws`
+    - PATH=$HOME/.local/bin:$PATH
+
+before_install:
+  - pyenv global 3.7.1
+  - pip install -U pip
+  - pip install awscli
+  - mkdir -p ~/$TRAVIS_BUILD_NUMBER
+  - aws s3 sync s3://travis-build-stages-shared-storage-test/$TRAVIS_BUILD_NUMBER ~/$TRAVIS_BUILD_NUMBER
+
 install:
-  - wget https://ci.adoptopenjdk.net/view/Dependencies/job/jtreg/lastSuccessfulBuild/artifact/jtreg-5.0-b01.tar.gz -O $TRAVIS_BUILD_DIR/jtreg.tar.gz
-  - tar -xvf $TRAVIS_BUILD_DIR/jtreg.tar.gz -C $TRAVIS_BUILD_DIR
-  - export JT_HOME=$TRAVIS_BUILD_DIR/jtreg
+  - wget https://ci.adoptopenjdk.net/view/Dependencies/job/jtreg/lastSuccessfulBuild/artifact/jtreg-5.0-b01.tar.gz -O $HOME/jtreg.tar.gz
+  - tar -xvf $HOME/jtreg.tar.gz -C $HOME
+  - export JT_HOME=$HOME/jtreg
 
 before_script:
   - |
@@ -50,8 +62,15 @@ before_script:
           ;;
       esac
 
-script:
-  - sh configure
-  - make images LOG=info
-  - make test-image LOG=info
-  - make run-test-jdk_lang TEST_JOBS=4
+jobs:
+  include:
+    - stage: build
+      script:
+        - sh configure
+        - make images LOG=info
+        - make test-image LOG=info
+    - stage: test
+      script: make run-test TEST="jdk_lang"
+      script: make run-test TEST="jdk_util"
+      script: make run-test TEST="jdk_math"
+      script: make run-test TEST="jdk_io"
