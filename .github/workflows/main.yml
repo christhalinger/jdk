@@ -17,30 +17,43 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    - name: Install dependencies
-      uses: mstksg/get-package@v1
-      with:
-        # Space-separated list of packages to install using brew install.  Will only run if on OSX.
-        brew: # optional
+      - name: Set up environment variables
+        env:
+          JT_HOME: $HOME/jtreg
+          CONF_NAME: output
+          
+      - name: Install dependencies
+        uses: mstksg/get-package@v1
+        with:
+          # Space-separated list of packages to install using brew install.  Will only run if on OSX.
+          brew: # optional
     
-        # Space-separated list of packages to install using apt-get.  Will only run if on ubuntu.
-        apt-get: libasound2-dev libcups2-dev libx11-dev libxext-dev libxrandr-dev libxrender-dev libxt-dev libxtst-dev
+          # Space-separated list of packages to install using apt-get.  Will only run if on ubuntu.
+          apt-get: libasound2-dev libcups2-dev libx11-dev libxext-dev libxrandr-dev libxrender-dev libxt-dev libxtst-dev
 
-    - name: Install boot JDK
-      uses: actions/setup-java@v1.3.0
-      with:
-        java-version: 13
+      - name: Install boot JDK
+        uses: actions/setup-java@v1.3.0
+        with:
+          java-version: 13
 
-    - name: Clone workspace
-      uses: actions/checkout@v2
+      - name: Clone workspace
+        uses: actions/checkout@v2
 
-    - name: Download jtreg
-      run: |
-        wget https://ci.adoptopenjdk.net/view/Dependencies/job/jtreg/lastSuccessfulBuild/artifact/jtreg-5.0-b01.tar.gz -O $HOME/jtreg.tar.gz
-        tar -xvf $HOME/jtreg.tar.gz -C $HOME
-        export JT_HOME=$HOME/jtreg
+      - name: Download jtreg
+        run: |
+          wget https://ci.adoptopenjdk.net/view/Dependencies/job/jtreg/lastSuccessfulBuild/artifact/jtreg-5.0-b01.tar.gz -O $HOME/jtreg.tar.gz
+          tar -xvf $HOME/jtreg.tar.gz -C $HOME
 
-    - name: Build
-      run: |
-        sh configure --with-log=info
-        make product-bundles
+      - name: Build
+        run: |
+          sh configure --with-conf-name=$CONF_NAME --with-log=info
+          make product-bundles
+
+      - name: Test jdk_lang
+        run: make run-test TEST="jdk_lang"
+      
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v1.0.0
+        with:
+          name: bundles
+          path: build/$CONF_NAME/bundles/
