@@ -12,8 +12,9 @@ notifications:
 
 env:
   global:
-    - JOBS=4
-    - TEST_JOBS=4
+    # VMs have 2 cores.
+    - JOBS=2
+    - TEST_JOBS=2
     # include $HOME/.local/bin for `aws`
     - PATH=$HOME/.local/bin:$PATH
 
@@ -47,6 +48,7 @@ before_script:
 
 jobs:
   include:
+    # Linux
     - stage: build
       os: linux
       dist: xenial
@@ -75,6 +77,7 @@ jobs:
       env: TEST="jdk_util"
       script: make run-test TEST="$TEST"
 
+    # macOS
     - stage: build
       os: osx
       osx_image: xcode11.1
@@ -85,9 +88,11 @@ jobs:
 
     - stage: test
       os: osx
+      osx_image: xcode11.1
       env: TEST="jdk_lang"
       script: make run-test TEST="$TEST"
     - stage: test
       os: osx
+      osx_image: xcode11.1
       env: TEST="jdk_util"
       script: make run-test TEST="$TEST"
