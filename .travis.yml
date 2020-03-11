@@ -24,7 +24,7 @@ jdk:
 
 install:
     - wget https://ci.adoptopenjdk.net/view/Dependencies/job/jtreg/lastSuccessfulBuild/artifact/jtreg-5.0-b01.tar.gz -O $HOME/jtreg.tar.gz
-    - tar -C $HOME -xvf jtreg.tar.gz
+    - tar -xvf $HOME/jtreg.tar.gz -C $HOME
     - export JT_HOME=$HOME/jtreg
 
 script:
