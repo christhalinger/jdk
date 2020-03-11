@@ -47,4 +47,4 @@ script:
   - sh configure
   - make images LOG=info
   - make test-image LOG=info
-  - make run-test-jdk_lang
+  - make run-test-jdk_lang TEST_JOBS=4
