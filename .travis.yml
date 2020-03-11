@@ -5,6 +5,7 @@ dist: xenial
 addons:
   apt:
     packages:
+      - libasound2-dev
       - libcups2-dev
       - libx11-dev
       - libxext-dev
