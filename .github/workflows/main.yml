@@ -13,6 +13,7 @@ env:
   JOBS: 2
   TEST_JOBS: 2
   JTREG_URL: https://ci.adoptopenjdk.net/view/Dependencies/job/jtreg/lastSuccessfulBuild/artifact/jtreg-5.0-b01.tar.gz
+  JT_HOME: $PWD/jtreg
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -22,7 +23,7 @@ jobs:
       - run: wget -qO - ${{env.JTREG_URL}} | tar -xzf -
       - uses: actions/upload-artifact@v1.0.0
         with:
-          name: ${{matrix.os}}/jtreg
+          name: jtreg
           path: jtreg/
 
   build:
@@ -45,9 +46,10 @@ jobs:
           java-version: 13
       - uses: actions/download-artifact@v1.0.0
         with:
-          name: ${{matrix.os}}/jtreg
+          name: jtreg
+      - run: chmod a+x jtreg/bin/*
 
-      - run: sh configure --with-conf-name=${{env.CONF_NAME}} --with-log=info --with-jtreg=$PWD/jtreg --with-jvm-features=-epsilongc,-shenandoahgc --with-jobs=${{env.JOBS}} --with-test-jobs=${{env.TEST_JOBS}}
+      - run: sh configure --with-conf-name=${{env.CONF_NAME}} --with-log=info --with-jvm-features=-epsilongc,-shenandoahgc --with-jobs=${{env.JOBS}} --with-test-jobs=${{env.TEST_JOBS}}
       - run: make jdk-image
       - run: make test-image
           
@@ -70,8 +72,11 @@ jobs:
       - uses: actions/setup-java@v1.3.0
         with:
           java-version: 13
-      - run: wget -qO - ${{env.JTREG_URL}} | tar -xzf -
-      - run: sh configure --with-conf-name=${{env.CONF_NAME}} --with-log=info --with-jtreg=$PWD/jtreg --with-jvm-features=-epsilongc,-shenandoahgc --with-jobs=${{env.JOBS}} --with-test-jobs=${{env.TEST_JOBS}}
+      - uses: actions/download-artifact@v1.0.0
+        with:
+          name: jtreg
+      - run: chmod a+x jtreg/bin/*
+      - run: sh configure --with-conf-name=${{env.CONF_NAME}} --with-log=info --with-jvm-features=-epsilongc,-shenandoahgc --with-jobs=${{env.JOBS}} --with-test-jobs=${{env.TEST_JOBS}}
       - uses: actions/download-artifact@v1.0.0
         with:
           name: images-${{matrix.os}}
@@ -94,8 +99,11 @@ jobs:
       - uses: actions/setup-java@v1.3.0
         with:
           java-version: 13
-      - run: wget -qO - ${{env.JTREG_URL}} | tar -xzf -
-      - run: sh configure --with-conf-name=${{env.CONF_NAME}} --with-log=info --with-jtreg=$PWD/jtreg --with-jvm-features=-epsilongc,-shenandoahgc --with-jobs=${{env.JOBS}} --with-test-jobs=${{env.TEST_JOBS}}
+      - uses: actions/download-artifact@v1.0.0
+        with:
+          name: jtreg
+      - run: chmod a+x jtreg/bin/*
+      - run: sh configure --with-conf-name=${{env.CONF_NAME}} --with-log=info --with-jvm-features=-epsilongc,-shenandoahgc --with-jobs=${{env.JOBS}} --with-test-jobs=${{env.TEST_JOBS}}
       - uses: actions/download-artifact@v1.0.0
         with:
           name: images-${{matrix.os}}
