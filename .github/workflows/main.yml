@@ -73,6 +73,7 @@ jobs:
     needs: [ build ]
     strategy:
       fail-fast: false  # Keep other test jobs running of one fails
+      max-parallel: 40
       matrix:
         test:
           # hotspot
