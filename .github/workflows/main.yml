@@ -16,7 +16,17 @@ env:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+  download:
+    runs-on: [ ubuntu-18.04 ]
+    steps:
+      - run: wget -qO - ${{env.JTREG_URL}} | tar -xzf -
+      - uses: actions/upload-artifact@v1.0.0
+        with:
+          name: ${{matrix.os}}/jtreg
+          path: jtreg/
+
   build:
+    needs: [ download ]
     strategy:
       matrix:
         os: [ ubuntu-18.04, macos-10.15 ]
@@ -33,7 +43,9 @@ jobs:
       - uses: actions/setup-java@v1.3.0
         with:
           java-version: 13
-      - run: wget -qO - ${{env.JTREG_URL}} | tar -xzf -
+      - uses: actions/download-artifact@v1.0.0
+        with:
+          name: ${{matrix.os}}/jtreg
 
       - run: sh configure --with-conf-name=${{env.CONF_NAME}} --with-log=info --with-jtreg=$PWD/jtreg --with-jvm-features=-epsilongc,-shenandoahgc --with-jobs=${{env.JOBS}} --with-test-jobs=${{env.TEST_JOBS}}
       - run: make jdk-image
