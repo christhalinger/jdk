@@ -69,12 +69,32 @@ jobs:
           name: artifacts-${{matrix.os}}
           path: artifacts/
           
-  test-jdk:
+  test:
     needs: [ build ]
     strategy:
       matrix:
+        test:
+          # jdk_core group
+          - jdk_lang
+          - jdk_util
+          - jdk_math
+          - jdk_io
+          - jdk_nio
+          - jdk_net
+          - jdk_rmi
+          - jdk_time
+          - jdk_security
+          - jdk_text
+          - core_tools
+          - jdk_other
+          # jdk_svc group
+          - jdk_management
+          - jdk_instrument
+          - jdk_jmx
+          - jdk_jdi
+          - jdk_jfr
+          - svc_tools
         os: [ ubuntu-18.04, macos-10.15 ]
-        test: [ jdk_lang, jdk_util ]
     runs-on: ${{matrix.os}}
     steps:
       - uses: mstksg/get-package@v1
