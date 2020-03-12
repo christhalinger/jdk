@@ -18,11 +18,18 @@ jobs:
   download:
     runs-on: [ ubuntu-18.04 ]
     steps:
-      - run: wget -O - ${{env.JTREG_URL}} | tar -xvzf -
-      - uses: actions/upload-artifact@v1.0.0
+      - uses: actions/cache@v1
+        id: cache-jtreg
         with:
-          name: jtreg
-          path: jtreg/
+          path: cache/
+          key: jtreg
+      - if: steps.cache-jtreg.outputs.cache-hit != 'true'
+        run: wget -O - ${{env.JTREG_URL}} | tar -xvzf - -C cache/
+      - run: pwd; ls -l
+#      - uses: actions/upload-artifact@v1.0.0
+#        with:
+#          name: jtreg
+#          path: jtreg/
 
   build:
     needs: [ download ]
@@ -37,15 +44,14 @@ jobs:
         with:
           #brew: # optional
           apt-get: ${{env.APT_GET_PACKAGES}}
-
       - uses: actions/checkout@v2
       - uses: actions/setup-java@v1.3.0
         with:
           java-version: 13
-      - uses: actions/download-artifact@v1.0.0
-        with:
-          name: jtreg
-      - run: chmod a+x jtreg/bin/*
+#      - uses: actions/download-artifact@v1.0.0
+#        with:
+#          name: jtreg
+#      - run: chmod a+x jtreg/bin/*
 
       - run: sh configure ${{env.CONFIGURE_OPTIONS}}
       - run: make jdk-image
@@ -73,10 +79,10 @@ jobs:
       - uses: actions/setup-java@v1.3.0
         with:
           java-version: 13
-      - uses: actions/download-artifact@v1.0.0
-        with:
-          name: jtreg
-      - run: chmod a+x jtreg/bin/*
+#      - uses: actions/download-artifact@v1.0.0
+#        with:
+#          name: jtreg
+#      - run: chmod a+x jtreg/bin/*
       - uses: actions/download-artifact@v1.0.0
         with:
           name: artifacts-${{matrix.os}}
