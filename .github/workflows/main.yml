@@ -13,7 +13,7 @@ env:
   CONF_NAME: output
   JOBS: 2
   TEST_JOBS: 2
-  CONFIGURE_OPTIONS: --with-conf-name=${{env.CONF_NAME}} --with-log=info --with-jtreg=$PWD/jtreg --with-jvm-features=-epsilongc,-shenandoahgc --with-jobs=${{env.JOBS}} --with-test-jobs=${{env.TEST_JOBS}}
+  CONFIGURE_OPTIONS: --with-conf-name=$CONF_NAME --with-log=info --with-jtreg=$PWD/jtreg --with-jvm-features=-epsilongc,-shenandoahgc --with-jobs=$JOBS --with-test-jobs=$TEST_JOBS
   JTREG_URL: https://ci.adoptopenjdk.net/view/Dependencies/job/jtreg/lastSuccessfulBuild/artifact/jtreg-5.0-b01.tar.gz
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
