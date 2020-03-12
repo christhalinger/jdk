@@ -10,7 +10,7 @@ on:
 
 env:
   APT_GET_PACKAGES: libasound2-dev libcups2-dev libx11-dev libxext-dev libxrandr-dev libxrender-dev libxt-dev libxtst-dev
-  CONFIGURE_OPTIONS: --with-log=info --with-jtreg=$PWD/jtreg --with-jvm-features=-epsilongc,-shenandoahgc
+  CONFIGURE_OPTIONS: --with-log=info --with-jtreg=$PWD/cache/jtreg --with-jvm-features=-epsilongc,-shenandoahgc
   JTREG_URL: https://ci.adoptopenjdk.net/view/Dependencies/job/jtreg/lastSuccessfulBuild/artifact/jtreg-5.0-b01.tar.gz
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -31,9 +31,7 @@ jobs:
           path: cache/
           key: jtreg
       - if: steps.cache-jtreg.outputs.cache-hit != 'true'
-        run: |
-          sh make/build-all.sh $JAVA_HOME
-          cp -av build/images/jtreg cache/
+        run: sh make/build-all.sh $JAVA_HOME && mv -v build/images/jtreg cache/
       - run: pwd
       - run: ls -l
       - run: ls -lR cache/
@@ -59,6 +57,12 @@ jobs:
         with:
           java-version: 13
       - uses: actions/checkout@v2
+      - uses: actions/cache@v1
+        id: cache-jtreg
+        with:
+          path: cache/
+          key: jtreg
+
 #      - uses: actions/download-artifact@v1.0.0
 #        with:
 #          name: jtreg
