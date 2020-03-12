@@ -11,6 +11,7 @@ on:
 env:
   APT_GET_PACKAGES: libasound2-dev libcups2-dev libx11-dev libxext-dev libxrandr-dev libxrender-dev libxt-dev libxtst-dev
   CONFIGURE_OPTIONS: --with-log=info --with-jtreg=$PWD/jtreg --with-jvm-features=-epsilongc,-shenandoahgc
+  JTREG_TAG: jtreg5.0-b01
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -20,8 +21,8 @@ jobs:
       - uses: actions/cache@v1
         id: cache-jtreg
         with:
+          key: ${{env.JTREG_TAG}}
           path: jtreg/
-          key: jtreg5.0-b01
       - uses: actions/setup-java@v1.3.0
         if: steps.cache-jtreg.outputs.cache-hit != 'true'
         with:
@@ -30,7 +31,7 @@ jobs:
         if: steps.cache-jtreg.outputs.cache-hit != 'true'
         with:
           repository: openjdk/jtreg
-          ref: jtreg5.0-b01
+          ref: ${{env.JTREG_TAG}}
       - if: steps.cache-jtreg.outputs.cache-hit != 'true'
         run: sh make/build-all.sh $JAVA_HOME && mv -v build/images/jtreg .
 
@@ -54,20 +55,15 @@ jobs:
       - uses: actions/cache@v1
         id: cache-jtreg
         with:
+          key: ${{env.JTREG_TAG}}
           path: jtreg/
-          key: jtreg
-
-#      - uses: actions/download-artifact@v1.0.0
-#        with:
-#          name: jtreg
-#      - run: chmod a+x jtreg/bin/*
 
       - run: sh configure ${{env.CONFIGURE_OPTIONS}}
       - run: make jdk-image
       - run: make test-image
 
       - run: mkdir artifacts
-      - run: zip -r -0 artifacts/images.zip build/*/images/
+      - run: zip -r artifacts/images.zip build/*/images/
       - uses: actions/upload-artifact@v1.0.0
         with:
           name: artifacts-${{matrix.os}}
@@ -88,15 +84,11 @@ jobs:
         with:
           java-version: 13
       - uses: actions/checkout@v2
-#      - uses: actions/download-artifact@v1.0.0
-#        with:
-#          name: jtreg
-#      - run: chmod a+x jtreg/bin/*
       - uses: actions/cache@v1
         id: cache-jtreg
         with:
+          key: ${{env.JTREG_TAG}}
           path: jtreg/
-          key: jtreg
       - uses: actions/download-artifact@v1.0.0
         with:
           name: artifacts-${{matrix.os}}
