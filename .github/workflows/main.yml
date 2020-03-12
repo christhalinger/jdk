@@ -80,8 +80,7 @@ jobs:
       - uses: actions/download-artifact@v1.0.0
         with:
           name: images-${{matrix.os}}
-          path: build/${{env.CONF_NAME}}/
-      - run: mv build/${{env.CONF_NAME}}/images-${{matrix.os}} build/${{env.CONF_NAME}}/images
+          path: build/${{env.CONF_NAME}}/images/
       - run: chmod a+x build/${{env.CONF_NAME}}/images/jdk/bin/*
       - run: make run-test-only TEST="jdk_lang"
 
@@ -107,7 +106,6 @@ jobs:
       - uses: actions/download-artifact@v1.0.0
         with:
           name: images-${{matrix.os}}
-          path: build/${{env.CONF_NAME}}/
-      - run: mv build/${{env.CONF_NAME}}/images-${{matrix.os}} build/${{env.CONF_NAME}}/images
+          path: build/${{env.CONF_NAME}}/images/
       - run: chmod a+x build/${{env.CONF_NAME}}/images/jdk/bin/*
       - run: make run-test-only TEST="jdk_util"
