@@ -52,7 +52,7 @@ jobs:
       - run: make test-image
 
       - run: mkdir artifacts
-      - run: zip -r artifacts/images.zip build/*/images/
+      - run: zip -r -0 artifacts/images.zip build/*/images/
       - uses: actions/upload-artifact@v1.0.0
         with:
           name: artifacts-${{matrix.os}}
@@ -80,7 +80,7 @@ jobs:
         with:
           name: artifacts-${{matrix.os}}
       - run: sh configure ${{env.CONFIGURE_OPTIONS}}
-      - run: unzip images.zip
+      - run: unzip artifacts-${{matrix.os}}/images.zip
       - run: make run-test-only TEST="jdk_lang"
 
   test-jdk_util:
@@ -105,5 +105,5 @@ jobs:
         with:
           name: artifacts-${{matrix.os}}
       - run: sh configure ${{env.CONFIGURE_OPTIONS}}
-      - run: unzip images.zip
+      - run: unzip artifacts-${{matrix.os}}/images.zip
       - run: make run-test-only TEST="jdk_util"
