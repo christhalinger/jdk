@@ -25,7 +25,9 @@ jobs:
         with:
           repository: openjdk/jtreg
           ref: jtreg5.0-b01
-      - run: cd jtreg && sh make/build-all.sh $JAVA_HOME
+      - run: pwd
+      - run: ls -l
+      - run: sh make/build-all.sh $JAVA_HOME
       - run: pwd
       - run: ls -l
       - run: ls -l jtreg/
