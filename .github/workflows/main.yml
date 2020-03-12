@@ -72,8 +72,14 @@ jobs:
   test:
     needs: [ build ]
     strategy:
+      fail-fast: false  # Keep other test jobs running of one fails
       matrix:
         test:
+          # hotspot
+          - hotspot_compiler
+          - hotspot_gc
+          - hotspot_runtime
+          - hotspot_serviceability
           # jdk_core group
           - jdk_lang
           - jdk_util
