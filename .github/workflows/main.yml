@@ -11,37 +11,31 @@ on:
 env:
   APT_GET_PACKAGES: libasound2-dev libcups2-dev libx11-dev libxext-dev libxrandr-dev libxrender-dev libxt-dev libxtst-dev
   CONFIGURE_OPTIONS: --with-log=info --with-jtreg=$PWD/jtreg --with-jvm-features=-epsilongc,-shenandoahgc
-  JTREG_URL: https://ci.adoptopenjdk.net/view/Dependencies/job/jtreg/lastSuccessfulBuild/artifact/jtreg-5.0-b01.tar.gz
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  download:
+  setup:
     runs-on: [ ubuntu-18.04 ]
     steps:
-      - uses: actions/setup-java@v1.3.0
-        with:
-          java-version: 8
-      - uses: actions/checkout@v2
-        with:
-          repository: openjdk/jtreg
-          ref: jtreg5.0-b01
       - uses: actions/cache@v1
         id: cache-jtreg
         with:
           path: jtreg/
           key: jtreg
+      - uses: actions/setup-java@v1.3.0
+        if: steps.cache-jtreg.outputs.cache-hit != 'true'
+        with:
+          java-version: 8
+      - uses: actions/checkout@v2
+        if: steps.cache-jtreg.outputs.cache-hit != 'true'
+        with:
+          repository: openjdk/jtreg
+          ref: jtreg5.0-b01
       - if: steps.cache-jtreg.outputs.cache-hit != 'true'
         run: sh make/build-all.sh $JAVA_HOME && mv -v build/images/jtreg .
-      - run: pwd
-      - run: ls -l
-      - run: ls -lR jtreg/
-#      - uses: actions/upload-artifact@v1.0.0
-#        with:
-#          name: jtreg
-#          path: jtreg/
 
   build:
-    needs: [ download ]
+    needs: [ setup ]
     strategy:
       matrix:
         os: [ ubuntu-18.04, macos-10.15 ]
