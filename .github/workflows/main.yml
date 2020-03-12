@@ -20,7 +20,7 @@ jobs:
   download:
     runs-on: [ ubuntu-18.04 ]
     steps:
-      - run: wget -qO - ${{env.JTREG_URL}} | tar -xzf -
+      - run: wget -O - ${{env.JTREG_URL}} | tar -xvzf -
       - uses: actions/upload-artifact@v1.0.0
         with:
           name: jtreg
@@ -82,6 +82,7 @@ jobs:
           name: images-${{matrix.os}}
           path: build/${{env.CONF_NAME}}/images/
       - run: chmod a+x build/${{env.CONF_NAME}}/images/jdk/bin/*
+      - run: ls -l build/${{env.CONF_NAME}}/images/jdk/bin/
       - run: make run-test-only TEST="jdk_lang"
 
   test-jdk_util:
@@ -108,4 +109,5 @@ jobs:
           name: images-${{matrix.os}}
           path: build/${{env.CONF_NAME}}/images/
       - run: chmod a+x build/${{env.CONF_NAME}}/images/jdk/bin/*
+      - run: ls -l build/${{env.CONF_NAME}}/images/jdk/bin/
       - run: make run-test-only TEST="jdk_util"
