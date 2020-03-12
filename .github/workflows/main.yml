@@ -10,8 +10,7 @@ on:
 
 env:
   APT_GET_PACKAGES: libasound2-dev libcups2-dev libx11-dev libxext-dev libxrandr-dev libxrender-dev libxt-dev libxtst-dev
-  CONF_NAME: output
-  CONFIGURE_OPTIONS: --with-conf-name=$CONF_NAME --with-log=info --with-jtreg=$PWD/jtreg --with-jvm-features=-epsilongc,-shenandoahgc
+  CONFIGURE_OPTIONS: --with-log=info --with-jtreg=$PWD/jtreg --with-jvm-features=-epsilongc,-shenandoahgc
   JTREG_URL: https://ci.adoptopenjdk.net/view/Dependencies/job/jtreg/lastSuccessfulBuild/artifact/jtreg-5.0-b01.tar.gz
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -55,7 +54,7 @@ jobs:
       - run: mkdir artifacts
       - uses: montudor/action-zip@v0.1.0
         with:
-          args: zip -r artifacts/images.zip build/${{env.CONF_NAME}}/images/
+          args: zip -r artifacts/images.zip build/*/images/
 
       - uses: actions/upload-artifact@v1.0.0
         with:
