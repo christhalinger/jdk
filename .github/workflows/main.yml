@@ -25,20 +25,15 @@ jobs:
         with:
           repository: openjdk/jtreg
           ref: jtreg5.0-b01
-      - run: pwd
-      - run: ls -l
-      - run: sh make/build-all.sh $JAVA_HOME
-      - run: pwd
-      - run: ls -l
-      - run: ls -l jtreg/
-      - run: ls -lR jtreg/build/
       - uses: actions/cache@v1
         id: cache-jtreg
         with:
           path: cache/
           key: jtreg
       - if: steps.cache-jtreg.outputs.cache-hit != 'true'
-        run: wget -O - ${{env.JTREG_URL}} | tar -xvzf - -C cache/
+        run: |
+          sh make/build-all.sh $JAVA_HOME
+          cp -av build/images/jtreg cache/
       - run: pwd
       - run: ls -l
       - run: ls -lR cache/
