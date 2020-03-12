@@ -51,11 +51,16 @@ jobs:
       - run: sh configure ${{env.CONFIGURE_OPTIONS}}
       - run: make jdk-image
       - run: make test-image
-          
+
+      - run: mkdir artifacts
+      - uses: montudor/action-zip@v0.1.0
+        with:
+          args: zip -r artifacts/images.zip build/${{env.CONF_NAME}}/images/
+
       - uses: actions/upload-artifact@v1.0.0
         with:
-          name: images-${{matrix.os}}
-          path: build/${{env.CONF_NAME}}/images/
+          name: artifacts-${{matrix.os}}
+          path: artifacts/
           
   test-jdk_lang:
     needs: [ build ]
@@ -75,13 +80,13 @@ jobs:
         with:
           name: jtreg
       - run: chmod a+x jtreg/bin/*
-      - run: sh configure ${{env.CONFIGURE_OPTIONS}}
       - uses: actions/download-artifact@v1.0.0
         with:
-          name: images-${{matrix.os}}
-          path: build/${{env.CONF_NAME}}/images/
-      - run: chmod a+x build/${{env.CONF_NAME}}/images/jdk/bin/*
-      - run: ls -l build/${{env.CONF_NAME}}/images/jdk/bin/
+          name: artifacts-${{matrix.os}}
+      - run: sh configure ${{env.CONFIGURE_OPTIONS}}
+      - uses: montudor/action-zip@v0.1.0
+        with:
+          args: unzip images.zip
       - run: make run-test-only TEST="jdk_lang"
 
   test-jdk_util:
@@ -102,11 +107,11 @@ jobs:
         with:
           name: jtreg
       - run: chmod a+x jtreg/bin/*
-      - run: sh configure ${{env.CONFIGURE_OPTIONS}}
       - uses: actions/download-artifact@v1.0.0
         with:
-          name: images-${{matrix.os}}
-          path: build/${{env.CONF_NAME}}/images/
-      - run: chmod a+x build/${{env.CONF_NAME}}/images/jdk/bin/*
-      - run: ls -l build/${{env.CONF_NAME}}/images/jdk/bin/
+          name: artifacts-${{matrix.os}}
+      - run: sh configure ${{env.CONFIGURE_OPTIONS}}
+      - uses: montudor/action-zip@v0.1.0
+        with:
+          args: unzip images.zip
       - run: make run-test-only TEST="jdk_util"
