@@ -25,7 +25,9 @@ jobs:
           key: jtreg
       - if: steps.cache-jtreg.outputs.cache-hit != 'true'
         run: wget -O - ${{env.JTREG_URL}} | tar -xvzf - -C cache/
-      - run: pwd; ls -l
+      - run: pwd
+      - run: ls -l
+      - run: ls -lR cache/
 #      - uses: actions/upload-artifact@v1.0.0
 #        with:
 #          name: jtreg
