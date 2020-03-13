@@ -63,7 +63,7 @@ jobs:
       - run: make test-image
 
       - run: mkdir artifacts
-      - run: zip -r artifacts/images.zip build/*/images/
+      - run: zip -r artifacts/images.zip build/*/images/jdk/ build/*/images/test/
       - uses: actions/upload-artifact@v1.0.0
         with:
           name: artifacts-${{matrix.os}}
@@ -77,11 +77,11 @@ jobs:
       matrix:
         test:
           # hotspot
-          - hotspot_compiler  # 79m(x)/55m(x)
+          - hotspot_compiler  # 79m(x)/46m(x)
           - hotspot_gc  # 93m/50m
           - hotspot_runtime hotspot_serviceability # 41m/30m + 5m = 46m
           # jdk_core group
-          - jdk_lang jdk_util jdk_math jdk_io  # 2m + 3m + 19m + 19m = 42m
+          - jdk_lang jdk_util jdk_math jdk_io  # 19m + 19m + 2m + 3m = 42m
           - jdk_rmi jdk_time jdk_text core_tools jdk_other  # 16m + 5m + 3m + 32m + 5m = 66m
           - jdk_nio  # 21m/42m(x)
           - jdk_net  # 74m
@@ -109,9 +109,9 @@ jobs:
       - run: sh configure ${{env.CONFIGURE_OPTIONS}}
       - run: unzip artifacts-${{matrix.os}}/images.zip
       - run: make run-test-only TEST="${{matrix.test}}" JTREG_VERBOSE="fail,error,time" LOG=debug
+      - name: Failed tests
+        if: failure()
+        run: cat build/*/test-results/*/text/newfailures.txt | grep -v "^#"
       - name: Statistics
         if: always()
         run: cat build/*/test-results/*/text/{stats.txt,timeStats.txt}
-      - name: Failed tests
-        if: failure()
-        run: cat build/*/test-results/*/text/newfailures.txt
