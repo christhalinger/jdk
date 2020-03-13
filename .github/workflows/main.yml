@@ -112,8 +112,8 @@ jobs:
       - run: sh configure ${{env.CONFIGURE_OPTIONS}}
       - run: unzip artifacts-${{matrix.os}}/images.zip
       - run: |
-        make run-test-only TEST="${{matrix.test}}" JTREG_VERBOSE="fail,error,time" LOG=debug
-        ls -l build/*/test-results/*/text/
-        cat build/*/test-results/*/text/stats.txt
-        cat build/*/test-results/*/text/newfailures.txt
-        cat build/*/test-results/*/text/other_errors.txt
+          make run-test-only TEST="${{matrix.test}}" JTREG_VERBOSE="fail,error,time" LOG=debug
+          ls -l build/*/test-results/*/text/
+          cat build/*/test-results/*/text/stats.txt
+          cat build/*/test-results/*/text/newfailures.txt
+          cat build/*/test-results/*/text/other_errors.txt
