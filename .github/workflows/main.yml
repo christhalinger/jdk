@@ -77,30 +77,20 @@ jobs:
       matrix:
         test:
           # hotspot
-          - hotspot_compiler
-          - hotspot_gc
-          - hotspot_runtime
-          - hotspot_serviceability
+          - hotspot_compiler  # 79m(x) 55m(x)
+          - hotspot_gc  # 93m 50m
+          - hotspot_runtime  # 41m 30m
+          - hotspot_serviceability  # 5m
           # jdk_core group
-          - jdk_lang
-          - jdk_util
-          - jdk_math
-          - jdk_io
-          - jdk_nio
-          - jdk_net
-          - jdk_rmi
-          - jdk_time
-          - jdk_security
-          - jdk_text
-          - core_tools
-          - jdk_other
+          - jdk_lang jdk_util  # 19m + 19m = 38m
+          - jdk_math jdk_io jdk_rmi jdk_time jdk_text jdk_other  # 2m + 3m + 16m + 5m + 3m + 5m = 34m
+          - jdk_nio  # 21m (42m(x)?)
+          - jdk_net  # 72m
+          - jdk_security  # 62m(x) 42m(x)
+          - core_tools  # 32m
           # jdk_svc group
-          - jdk_management
-          - jdk_instrument
-          - jdk_jmx
-          - jdk_jdi
-          - jdk_jfr
-          - svc_tools
+          - jdk_management jdk_instrument jdk_jmx svc_tools  # 3m + 3m + 11m + 3m = 20m
+          - jdk_jdi jdk_jfr  # 15m + 15m = 30m
         os: [ ubuntu-18.04, macos-10.15 ]
     runs-on: ${{matrix.os}}
     steps:
@@ -119,10 +109,11 @@ jobs:
       - uses: actions/download-artifact@v1.0.0
         with:
           name: artifacts-${{matrix.os}}
-      - run: sh configure ${{env.CONFIGURE_OPTIONS}} --with-log=debug
+      - run: sh configure ${{env.CONFIGURE_OPTIONS}}
       - run: unzip artifacts-${{matrix.os}}/images.zip
-      - run: make run-test-only TEST="${{matrix.test}}" JTREG_VERBOSE="fail,error,time"
-      - run: ls -l build/*/test-results/*/text/
-      - run: cat build/*/test-results/*/text/stats.txt
-      - run: cat build/*/test-results/*/text/newfailures.txt
-      - run: cat build/*/test-results/*/text/other_errors.txt
+      - run: |
+        make run-test-only TEST="${{matrix.test}}" JTREG_VERBOSE="fail,error,time" LOG=debug
+        ls -l build/*/test-results/*/text/
+        cat build/*/test-results/*/text/stats.txt
+        cat build/*/test-results/*/text/newfailures.txt
+        cat build/*/test-results/*/text/other_errors.txt
