@@ -10,7 +10,7 @@ on:
 
 env:
   APT_GET_PACKAGES: libasound2-dev libcups2-dev libx11-dev libxext-dev libxrandr-dev libxrender-dev libxt-dev libxtst-dev
-  CONFIGURE_OPTIONS: --with-log=info --with-jtreg=$PWD/jtreg --with-jvm-features=-epsilongc,-shenandoahgc
+  CONFIGURE_OPTIONS: --with-jtreg=$PWD/jtreg --with-jvm-features=-epsilongc,-shenandoahgc
   JTREG_TAG: jtreg5.0-b01
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -58,7 +58,7 @@ jobs:
           key: ${{env.JTREG_TAG}}
           path: jtreg/
 
-      - run: sh configure ${{env.CONFIGURE_OPTIONS}}
+      - run: sh configure ${{env.CONFIGURE_OPTIONS}} --with-log=info
       - run: make jdk-image
       - run: make test-image
 
@@ -119,6 +119,10 @@ jobs:
       - uses: actions/download-artifact@v1.0.0
         with:
           name: artifacts-${{matrix.os}}
-      - run: sh configure ${{env.CONFIGURE_OPTIONS}}
+      - run: sh configure ${{env.CONFIGURE_OPTIONS}} --with-log=debug
       - run: unzip artifacts-${{matrix.os}}/images.zip
-      - run: make run-test-only TEST="${{matrix.test}}"
+      - run: make run-test-only TEST="${{matrix.test}}" JTREG_VERBOSE="fail,error,time"
+      - run: ls -l build/*/test-results/*/text/
+      - run: cat build/*/test-results/*/text/stats.txt
+      - run: cat build/*/test-results/*/text/newfailures.txt
+      - run: cat build/*/test-results/*/text/other_errors.txt
