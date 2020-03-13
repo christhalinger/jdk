@@ -84,8 +84,8 @@ jobs:
           - jdk_lang jdk_util jdk_math jdk_io  # 19m + 19m + 2m + 3m = 42m
           - jdk_rmi jdk_time jdk_text core_tools jdk_other  # 16m + 5m + 3m + 32m + 5m = 66m
           - jdk_nio  # 21m/42m(x)
-          - jdk_net  # 74m
-          - jdk_security  # 62m(x)/42m(x)
+          - jdk_net  # 74m/53m(x)
+          - jdk_security  # 62m(x)/58m(x)
           # jdk_svc group
           - jdk_management jdk_instrument jdk_jmx jdk_jdi jdk_jfr svc_tools  # 3m + 3m + 11m + 15m + 15m + 3m = 50m
         os: [ ubuntu-18.04, macos-10.15 ]
@@ -111,7 +111,7 @@ jobs:
       - run: make run-test-only TEST="${{matrix.test}}" JTREG_VERBOSE="fail,error,time" LOG=debug
       - name: Failed tests
         if: failure()
-        run: cat build/*/test-results/*/text/newfailures.txt | grep -v "^#"
+        run: cat build/*/test-results/*/text/{newfailures.txt,other_errors.txt} | grep -v "^#"
       - name: Statistics
         if: always()
         run: cat build/*/test-results/*/text/{stats.txt,timeStats.txt}
