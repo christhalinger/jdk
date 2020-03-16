@@ -110,7 +110,7 @@ jobs:
           name: artifacts-${{matrix.os}}
       - run: sh configure ${{env.CONFIGURE_OPTIONS}}
       - run: unzip artifacts-${{matrix.os}}/images.zip
-      - run: make run-test-only TEST="${{matrix.test}}" JTREG="VM_OPTIONS=$${matrix.gc}}" JTREG_VERBOSE="fail,error,time" LOG=debug
+      - run: make run-test-only TEST="${{matrix.test}}" JTREG="VM_OPTIONS=${{matrix.gc}}" JTREG_VERBOSE="fail,error,time" LOG=debug
       - name: Failed tests
         if: failure()
         run: cat build/*/test-results/*/text/{newfailures.txt,other_errors.txt} | grep -v "^#"
