@@ -76,42 +76,42 @@ jobs:
       #max-parallel: 20
       matrix:
         test:
-#          # hotspot
-#          - hotspot_compiler  # 79m(x)/46m(x)
-#          - hotspot_gc  # 93m/50m
-#          - hotspot_runtime hotspot_serviceability # 41m/30m + 5m = 46m
-#          # jdk_core group
-#          - jdk_lang jdk_util jdk_math jdk_io jdk_nio  # 19m + 19m + 2m + 3m + 21m = 63m
-#          - jdk_rmi jdk_time jdk_text core_tools jdk_other  # 16m + 5m + 3m + 32m + 5m = 66m
-#          - jdk_net  # 74m/53m(x)
-#          - jdk_security  # 62m(x)/58m(x)
-#          # jdk_svc group
-#          - jdk_management jdk_instrument jdk_jmx jdk_jdi jdk_jfr svc_tools  # 3m + 3m + 11m + 15m + 15m + 3m = 50m
           # hotspot
-          - hotspot_compiler
-          - hotspot_gc
-          - hotspot_runtime
-          - hotspot_serviceability
+          - hotspot_compiler  # 79m(x)/46m(x)
+          - hotspot_gc  # 93m/50m
+          - hotspot_runtime hotspot_serviceability # 41m/30m + 5m = 46m
           # jdk_core group
-          - jdk_lang
-          - jdk_util
-          - jdk_math
-          - jdk_io
-          - jdk_nio
-          - jdk_net
-          - jdk_rmi
-          - jdk_time
-          - jdk_security
-          - jdk_text
-          - core_tools
-          - jdk_other
+          - jdk_lang jdk_util jdk_math jdk_io jdk_nio  # 19m + 19m + 2m + 3m + 21m = 63m
+          - jdk_rmi jdk_time jdk_text core_tools jdk_other  # 16m + 5m + 3m + 32m + 5m = 66m
+          - jdk_net  # 74m/53m(x)
+          - jdk_security  # 62m(x)/58m(x)
           # jdk_svc group
-          - jdk_management
-          - jdk_instrument
-          - jdk_jmx
-          - jdk_jdi
-          - jdk_jfr
-          - svc_tools
+          - jdk_management jdk_instrument jdk_jmx jdk_jdi jdk_jfr svc_tools  # 3m + 3m + 11m + 15m + 15m + 3m = 50m
+#          # hotspot
+#          - hotspot_compiler
+#          - hotspot_gc
+#          - hotspot_runtime
+#          - hotspot_serviceability
+#          # jdk_core group
+#          - jdk_lang
+#          - jdk_util
+#          - jdk_math
+#          - jdk_io
+#          - jdk_nio
+#          - jdk_net
+#          - jdk_rmi
+#          - jdk_time
+#          - jdk_security
+#          - jdk_text
+#          - core_tools
+#          - jdk_other
+#          # jdk_svc group
+#          - jdk_management
+#          - jdk_instrument
+#          - jdk_jmx
+#          - jdk_jdi
+#          - jdk_jfr
+#          - svc_tools
         compiler:
           - ''
           - -XX:+UseJVMCICompiler
