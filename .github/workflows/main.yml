@@ -130,8 +130,8 @@ jobs:
           - c2
           - graal
         gc:
-          - -XX:+UseG1GC
-          - -XX:+UseParallelGC
+          - g1
+          - parallel
     runs-on: ${{matrix.os}}
     steps:
       - uses: mstksg/get-package@v1
@@ -152,10 +152,14 @@ jobs:
       - run: sh configure ${{env.CONFIGURE_OPTIONS}} --with-debug-level=${{matrix.debuglevel}}
       - run: unzip artifacts-${{matrix.os}}-${{matrix.debuglevel}}/images.zip
         
-      - run: make run-test-only TEST="${{matrix.test}}" JTREG="VM_OPTIONS=${{matrix.gc}}; VERBOSE=fail,error,time" LOG=debug
-        if: matrix.compiler == 'c2'
-      - run: make run-test-only TEST="${{matrix.test}}" JTREG="VM_OPTIONS=-XX:+UnlockExperimentalVMOptions -XX:+UseJVMCICompiler ${{matrix.gc}}; VERBOSE=fail,error,time; EXTRA_PROBLEM_LIST=ProblemList-graal.txt" LOG=debug
-        if: matrix.compiler == 'graal'
+      - run: make run-test-only TEST="${{matrix.test}}" JTREG="VM_OPTIONS=-XX:+UseG1GC; VERBOSE=fail,error,time" LOG=debug
+        if: matrix.compiler == 'c2' && matrix.gc == 'g1'
+      - run: make run-test-only TEST="${{matrix.test}}" JTREG="VM_OPTIONS=-XX:+UseParallelGC; VERBOSE=fail,error,time" LOG=debug
+        if: matrix.compiler == 'c2' && matric.gc == 'parallel'
+      - run: make run-test-only TEST="${{matrix.test}}" JTREG="VM_OPTIONS=-XX:+UnlockExperimentalVMOptions -XX:+UseJVMCICompiler -XX:+UseG1GC; VERBOSE=fail,error,time; EXTRA_PROBLEM_LIST=ProblemList-graal.txt" LOG=debug
+        if: matrix.compiler == 'graal' && matrix.gc == 'g1'
+      - run: make run-test-only TEST="${{matrix.test}}" JTREG="VM_OPTIONS=-XX:+UnlockExperimentalVMOptions -XX:+UseJVMCICompiler -XX:+UseParallelGC; VERBOSE=fail,error,time; EXTRA_PROBLEM_LIST=ProblemList-graal.txt" LOG=debug
+        if: matrix.compiler == 'graal' && matric.gc == 'parallel'
 
       - name: Failed tests
         if: failure()
