@@ -81,17 +81,20 @@ jobs:
       #max-parallel: 20
       matrix:
         test:
-          # hotspot
-          - hotspot_compiler  # 79m(x)/46m(x)
-          - hotspot_gc  # 93m/50m
-          - hotspot_runtime hotspot_serviceability # 41m/30m + 5m = 46m
-          # jdk_core group
-          - jdk_lang jdk_util jdk_math jdk_io jdk_nio  # 19m + 19m + 2m + 3m + 21m = 63m
-          - jdk_rmi jdk_time jdk_text core_tools jdk_other  # 16m + 5m + 3m + 32m + 5m = 66m
-          - jdk_net  # 74m/53m(x)
-          - jdk_security  # 62m(x)/58m(x)
-          # jdk_svc group
-          - jdk_management jdk_instrument jdk_jmx jdk_jdi jdk_jfr svc_tools  # 3m + 3m + 11m + 15m + 15m + 3m = 50m
+#          # hotspot
+#          - hotspot_compiler  # 79m(x)/46m(x)
+#          - hotspot_gc  # 93m/50m
+#          - hotspot_runtime hotspot_serviceability # 41m/30m + 5m = 46m
+#          # jdk_core group
+#          - jdk_lang jdk_util jdk_math jdk_io jdk_nio  # 19m + 19m + 2m + 3m + 21m = 63m
+#          - jdk_rmi jdk_time jdk_text core_tools jdk_other  # 16m + 5m + 3m + 32m + 5m = 66m
+#          - jdk_net  # 74m/53m(x)
+#          - jdk_security  # 62m(x)/58m(x)
+#          # jdk_svc group
+#          - jdk_management jdk_instrument jdk_jmx jdk_jdi jdk_jfr svc_tools  # 3m + 3m + 11m + 15m + 15m + 3m = 50m
+
+          - jdk_jfr
+
 #          # hotspot
 #          - hotspot_compiler
 #          - hotspot_gc
@@ -124,8 +127,8 @@ jobs:
           - release
           - fastdebug
         compiler:
-          - ''
-          - -XX:+UseJVMCICompiler
+          - c2
+          - graal
         gc:
           - -XX:+UseG1GC
           - -XX:+UseParallelGC
@@ -148,7 +151,12 @@ jobs:
           name: artifacts-${{matrix.os}}-${{matrix.debuglevel}}
       - run: sh configure ${{env.CONFIGURE_OPTIONS}} --with-debug-level=${{matrix.debuglevel}}
       - run: unzip artifacts-${{matrix.os}}-${{matrix.debuglevel}}/images.zip
-      - run: make run-test-only TEST="${{matrix.test}}" JTREG="VM_OPTIONS=-XX:+UnlockExperimentalVMOptions ${{matrix.compiler}} ${{matrix.gc}}" JTREG_VERBOSE="fail,error,time" LOG=debug
+        
+      - run: make run-test-only TEST="${{matrix.test}}" JTREG="VM_OPTIONS=${{matrix.gc}}; VERBOSE=fail,error,time" LOG=debug
+        if: matrix.compiler == 'c2'
+      - run: make run-test-only TEST="${{matrix.test}}" JTREG="VM_OPTIONS=-XX:+UnlockExperimentalVMOptions -XX:+UseJVMCICompiler ${{matrix.gc}}; VERBOSE=fail,error,time; EXTRA_PROBLEM_LIST=ProblemList-graal.txt" LOG=debug
+        if: matrix.compiler == 'graal'
+
       - name: Failed tests
         if: failure()
         run: cat build/*/test-results/*/text/{newfailures.txt,other_errors.txt} | grep -v "^#"
