@@ -10,7 +10,7 @@ on:
 
 env:
   APT_GET_PACKAGES: libasound2-dev libcups2-dev libx11-dev libxext-dev libxrandr-dev libxrender-dev libxt-dev libxtst-dev
-  CONFIGURE_OPTIONS: --with-jtreg=$PWD/jtreg --with-jvm-features=-epsilongc,-shenandoahgc
+  CONFIGURE_OPTIONS: --with-jtreg=$PWD/jtreg --with-log=info --with-native-debug-symbols=zipped --with-jvm-features=-epsilongc,-shenandoahgc
   JTREG_TAG: jtreg5.0-b01
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -39,7 +39,12 @@ jobs:
     needs: [ setup ]
     strategy:
       matrix:
-        os: [ ubuntu-18.04, macos-10.15 ]
+        os:
+          - ubuntu-18.04
+          - macos-10.15
+        debuglevel:
+          - release
+          - fastdebug
     runs-on: ${{matrix.os}}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -58,7 +63,7 @@ jobs:
           key: ${{env.JTREG_TAG}}
           path: jtreg/
 
-      - run: sh configure ${{env.CONFIGURE_OPTIONS}} --with-log=info
+      - run: sh configure ${{env.CONFIGURE_OPTIONS}} --with-debug-level=${{matrix.debuglevel}}
       - run: make jdk-image
       - run: make test-image
 
@@ -66,7 +71,7 @@ jobs:
       - run: zip -r artifacts/images.zip build/*/images/jdk/ build/*/images/test/
       - uses: actions/upload-artifact@v1.0.0
         with:
-          name: artifacts-${{matrix.os}}
+          name: artifacts-${{matrix.os}}-${{matrix.debuglevel}}
           path: artifacts/
           
   test:
@@ -112,15 +117,18 @@ jobs:
 #          - jdk_jdi
 #          - jdk_jfr
 #          - svc_tools
+        os:
+          - ubuntu-18.04
+          - macos-10.15
+        debuglevel:
+          - release
+          - fastdebug
         compiler:
           - ''
           - -XX:+UseJVMCICompiler
         gc:
           - -XX:+UseG1GC
           - -XX:+UseParallelGC
-        os:
-          - ubuntu-18.04
-          - macos-10.15
     runs-on: ${{matrix.os}}
     steps:
       - uses: mstksg/get-package@v1
@@ -137,9 +145,9 @@ jobs:
           path: jtreg/
       - uses: actions/download-artifact@v1.0.0
         with:
-          name: artifacts-${{matrix.os}}
-      - run: sh configure ${{env.CONFIGURE_OPTIONS}}
-      - run: unzip artifacts-${{matrix.os}}/images.zip
+          name: artifacts-${{matrix.os}}-${{matrix.debuglevel}}
+      - run: sh configure ${{env.CONFIGURE_OPTIONS}} --with-debug-level=${{matrix.debuglevel}}
+      - run: unzip artifacts-${{matrix.os}}-${{matrix.debuglevel}}/images.zip
       - run: make run-test-only TEST="${{matrix.test}}" JTREG="VM_OPTIONS=-XX:+UnlockExperimentalVMOptions ${{matrix.compiler}} ${{matrix.gc}}" JTREG_VERBOSE="fail,error,time" LOG=debug
       - name: Failed tests
         if: failure()
