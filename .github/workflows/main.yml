@@ -10,7 +10,7 @@ on:
 
 env:
   APT_GET_PACKAGES: libasound2-dev libcups2-dev libx11-dev libxext-dev libxrandr-dev libxrender-dev libxt-dev libxtst-dev
-  CONFIGURE_OPTIONS: --with-jtreg=$PWD/jtreg --with-log=info --with-native-debug-symbols=zipped --with-jvm-features=-epsilongc,-shenandoahgc
+  CONFIGURE_OPTIONS: --with-jtreg=$PWD/jtreg --with-log=info --with-native-debug-symbols=zipped --with-jvm-features=-epsilongc,-shenandoahgc --with-test-jobs=2
   JTREG_TAG: jtreg5.0-b01
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -44,7 +44,7 @@ jobs:
           - macos-10.15
         debuglevel:
           - release
-          #- fastdebug
+          - fastdebug
     runs-on: ${{matrix.os}}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -90,20 +90,20 @@ jobs:
       #max-parallel: 20
       matrix:
         test:
-#          # hotspot
-#          - hotspot_compiler  # 79m(x)/46m(x)
-#          - hotspot_gc  # 93m/50m
-#          - hotspot_runtime hotspot_serviceability # 41m/30m + 5m = 46m
-#          # jdk_core group
-#          - jdk_lang jdk_util jdk_math jdk_io jdk_nio  # 19m + 19m + 2m + 3m + 21m = 63m
-#          - jdk_rmi jdk_time jdk_text core_tools jdk_other  # 16m + 5m + 3m + 32m + 5m = 66m
-#          - jdk_net  # 74m/53m(x)
-#          - jdk_security  # 62m(x)/58m(x)
-#          # jdk_svc group
-#          - jdk_management jdk_instrument jdk_jmx jdk_jdi jdk_jfr svc_tools  # 3m + 3m + 11m + 15m + 15m + 3m = 50m
+          # hotspot
+          - hotspot_compiler  # 79m(x)/46m(x)
+          - hotspot_gc  # 93m/50m
+          - hotspot_runtime hotspot_serviceability # 41m/30m + 5m = 46m
+          # jdk_core group
+          - jdk_lang jdk_util jdk_math jdk_io jdk_nio  # 19m + 19m + 2m + 3m + 21m = 63m
+          - jdk_rmi jdk_time jdk_text core_tools jdk_other  # 16m + 5m + 3m + 32m + 5m = 66m
+          - jdk_net  # 74m/53m(x)
+          - jdk_security  # 62m(x)/58m(x)
+          # jdk_svc group
+          - jdk_management jdk_instrument jdk_jmx jdk_jdi jdk_jfr svc_tools  # 3m + 3m + 11m + 15m + 15m + 3m = 50m
 
-          - jdk_text
-          - jdk_jfr
+#          - jdk_text
+#          - jdk_jfr
 
 #          # hotspot
 #          - hotspot_compiler
@@ -135,12 +135,12 @@ jobs:
           - macos-10.15
         debuglevel:
           - release
-          #- fastdebug
+          - fastdebug
         compiler:
           - c2
-          #- graal
+          - graal
         gc:
-          #- g1
+          - g1
           - parallel
     runs-on: ${{matrix.os}}
     steps:
