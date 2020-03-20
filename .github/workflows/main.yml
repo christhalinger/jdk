@@ -164,7 +164,23 @@ jobs:
 
       - name: Failed tests
         if: failure()
-        run: cat build/*/test-results/*/text/{newfailures.txt,other_errors.txt} | grep -v "^#"
+        run: |
+          mkdir -p test-results
+          cat build/*/test-results/*/text/{newfailures.txt,other_errors.txt} | grep -v "^#" | tee -a test-results/failures-${{matrix.os}}-${{matrix.debuglevel}}-${{matrix.compiler}}-${{matrix.gc}}
       - name: Statistics
         if: always()
         run: cat build/*/test-results/*/text/{stats.txt,timeStats.txt}
+      - uses: actions/upload-artifact@v1.0.0
+        with:
+          name: test-results
+          path: test-results/
+
+  test-results:
+    needs: [ test ]
+    runs-on: [ ubuntu-18.04 ]
+    steps:
+      - uses: actions/download-artifact@v1.0.0
+        with:
+          name: test-results
+      - name: Failed tests
+        run: cd test-results && for i in *; do echo "$i:"; cat $i; echo ""; done
