@@ -61,7 +61,7 @@ jobs:
         id: ccache
         with:
           key: ccache-${{matrix.os}}
-          path: ${{HOME}}/.ccache/
+          path: $HOME/.ccache/
       - uses: actions/cache@v1
         id: cache-jtreg
         with:
