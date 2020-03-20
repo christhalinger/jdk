@@ -51,8 +51,8 @@ jobs:
     steps:
       - uses: mstksg/get-package@v1
         with:
-          #brew: # optional
           apt-get: ${{env.APT_GET_PACKAGES}}
+          #brew: # optional
       - uses: actions/setup-java@v1.3.0
         with:
           java-version: 13
@@ -93,7 +93,7 @@ jobs:
 #          # jdk_svc group
 #          - jdk_management jdk_instrument jdk_jmx jdk_jdi jdk_jfr svc_tools  # 3m + 3m + 11m + 15m + 15m + 3m = 50m
 
-          - jdk_math
+          - jdk_text
           - jdk_jfr
 
 #          # hotspot
@@ -165,8 +165,8 @@ jobs:
       - name: Failed tests
         if: failure()
         run: |
-          mkdir -p test-results/failures
-          cat build/*/test-results/*/text/{newfailures.txt,other_errors.txt} | grep -v "^#" | tee -a test-results/failures/${{matrix.os}}-${{matrix.debuglevel}}-${{matrix.compiler}}-${{matrix.gc}}
+          mkdir -p test-results/failures/${{matrix.os}}-${{matrix.debuglevel}}-${{matrix.compiler}}-${{matrix.gc}}
+          for i in build/*/test-results/jtreg_*; do cat $i/text/{newfailures.txt,other_errors.txt} | grep -v "^#" | tee test-results/failures/${{matrix.os}}-${{matrix.debuglevel}}-${{matrix.compiler}}-${{matrix.gc}}/`basename $i`.txt; done
       - uses: actions/upload-artifact@v1.0.0
         if: failure()
         with:
@@ -184,4 +184,4 @@ jobs:
         with:
           name: test-results
       - name: Failed tests
-        run: cd test-results/failures/ && for i in *; do echo "$i:"; cat $i; echo ""; done
+        run: for i in test-results/failures/*; do echo "`basename $i`:"; cat $i/*.txt; echo ""; done
