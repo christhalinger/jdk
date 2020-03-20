@@ -61,20 +61,20 @@ jobs:
         id: ccache
         with:
           key: ccache-${{matrix.os}}
-          path: $HOME/.ccache/
+          path: ccache/
       - uses: actions/cache@v1
         id: cache-jtreg
         with:
           key: ${{env.JTREG_TAG}}
           path: jtreg/
 
-      - run: ccache --show-stats
+      - run: CCACHE_DIR=$PWD/ccache ccache --show-stats
 
-      - run: sh configure --enable-ccache ${{env.CONFIGURE_OPTIONS}} --with-debug-level=${{matrix.debuglevel}}
+      - run: sh configure --enable-ccache --with-ccache-dir=$PWD/ccache ${{env.CONFIGURE_OPTIONS}} --with-debug-level=${{matrix.debuglevel}}
       - run: make jdk-image
       - run: make test-image
 
-      - run: ccache --show-stats
+      - run: CCACHE_DIR=$PWD/ccache ccache --show-stats
 
       - run: mkdir artifacts
       - run: tar -czvf artifacts/images.tar build/*/images/jdk/ build/*/images/test/
