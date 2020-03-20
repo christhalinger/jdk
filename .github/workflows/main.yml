@@ -9,8 +9,9 @@ on:
 #    branches: [ master ]
 
 env:
-  APT_GET_PACKAGES: libasound2-dev libcups2-dev libx11-dev libxext-dev libxrandr-dev libxrender-dev libxt-dev libxtst-dev
-  CONFIGURE_OPTIONS: --with-jtreg=$PWD/jtreg --with-log=info --with-native-debug-symbols=zipped --with-jvm-features=-epsilongc,-shenandoahgc
+  APT_GET_PACKAGES: ccache libasound2-dev libcups2-dev libx11-dev libxext-dev libxrandr-dev libxrender-dev libxt-dev libxtst-dev
+  BREW_PACKAGES: ccache
+  CONFIGURE_OPTIONS: --enable-ccache --with-ccache-dir=$PWD/ccache --with-jtreg=$PWD/jtreg --with-log=info --with-native-debug-symbols=zipped --with-jvm-features=-epsilongc,-shenandoahgc
   JTREG_TAG: jtreg5.0-b01
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -52,11 +53,16 @@ jobs:
       - uses: mstksg/get-package@v1
         with:
           apt-get: ${{env.APT_GET_PACKAGES}}
-          #brew: # optional
+          brew: ${{env.BREW_PACKAGES}}
       - uses: actions/setup-java@v1.3.0
         with:
           java-version: 13
       - uses: actions/checkout@v2
+      - uses: gerbal/always-cache@v1.0.3
+        id: ccache
+        with:
+          key: ccache-${{matrix.os}}
+          path: ccache/
       - uses: actions/cache@v1
         id: cache-jtreg
         with:
