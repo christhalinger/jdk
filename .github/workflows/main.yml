@@ -11,7 +11,7 @@ on:
 env:
   APT_GET_PACKAGES: ccache libasound2-dev libcups2-dev libx11-dev libxext-dev libxrandr-dev libxrender-dev libxt-dev libxtst-dev
   BREW_PACKAGES: ccache
-  CONFIGURE_OPTIONS: --enable-ccache --with-ccache-dir=$PWD/ccache --with-jtreg=$PWD/jtreg --with-log=info --with-native-debug-symbols=zipped --with-jvm-features=-epsilongc,-shenandoahgc
+  CONFIGURE_OPTIONS: --enable-ccache --with-jtreg=$PWD/jtreg --with-log=info --with-native-debug-symbols=zipped --with-jvm-features=-epsilongc,-shenandoahgc
   JTREG_TAG: jtreg5.0-b01
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -62,7 +62,7 @@ jobs:
         id: ccache
         with:
           key: ccache-${{matrix.os}}
-          path: ccache/
+          path: ${{env.HOME}}/.ccache/
       - uses: actions/cache@v1
         id: cache-jtreg
         with:
