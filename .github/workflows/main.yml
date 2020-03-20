@@ -126,12 +126,12 @@ jobs:
           - macos-10.15
         debuglevel:
           - release
-          - fastdebug
+          #- fastdebug
         compiler:
           - c2
-          - graal
+          #- graal
         gc:
-          - g1
+          #- g1
           - parallel
     runs-on: ${{matrix.os}}
     steps:
@@ -153,13 +153,13 @@ jobs:
       - run: sh configure ${{env.CONFIGURE_OPTIONS}} --with-debug-level=${{matrix.debuglevel}}
       - run: unzip artifacts-${{matrix.os}}-${{matrix.debuglevel}}/images.zip
         
-      - run: make run-test-only TEST="${{matrix.test}}" JTREG="VM_OPTIONS=-XX:+UseG1GC; VERBOSE=fail,error,time; EXTRA_PROBLEM_LIST=ProblemList-g1.txt" LOG=debug
+      - run: make run-test-only TEST="${{matrix.test}}" JTREG="VM_OPTIONS=-XX:+UseG1GC; EXTRA_PROBLEM_LISTS=ProblemList-g1.txt; VERBOSE=fail,error,time" LOG=debug
         if: matrix.compiler == 'c2' && matrix.gc == 'g1'
-      - run: make run-test-only TEST="${{matrix.test}}" JTREG="VM_OPTIONS=-XX:+UseParallelGC; VERBOSE=fail,error,time; EXTRA_PROBLEM_LIST=ProblemList-parallel.txt" LOG=debug
+      - run: make run-test-only TEST="${{matrix.test}}" JTREG="VM_OPTIONS=-XX:+UseParallelGC; EXTRA_PROBLEM_LISTS=ProblemList-parallel.txt; VERBOSE=fail,error,time" LOG=debug
         if: matrix.compiler == 'c2' && matrix.gc == 'parallel'
-      - run: make run-test-only TEST="${{matrix.test}}" JTREG="VM_OPTIONS=-XX:+UnlockExperimentalVMOptions -XX:+UseJVMCICompiler -XX:+UseG1GC; VERBOSE=fail,error,time; EXTRA_PROBLEM_LIST=ProblemList-graal.txt ProblemList-g1.txt" LOG=debug
+      - run: make run-test-only TEST="${{matrix.test}}" JTREG="VM_OPTIONS=-XX:+UnlockExperimentalVMOptions -XX:+UseJVMCICompiler -XX:+UseG1GC; EXTRA_PROBLEM_LISTS=ProblemList-graal.txt ProblemList-g1.txt; VERBOSE=fail,error,time" LOG=debug
         if: matrix.compiler == 'graal' && matrix.gc == 'g1'
-      - run: make run-test-only TEST="${{matrix.test}}" JTREG="VM_OPTIONS=-XX:+UnlockExperimentalVMOptions -XX:+UseJVMCICompiler -XX:+UseParallelGC; VERBOSE=fail,error,time; EXTRA_PROBLEM_LIST=ProblemList-graal.txt ProblemList-parallel.txt" LOG=debug
+      - run: make run-test-only TEST="${{matrix.test}}" JTREG="VM_OPTIONS=-XX:+UnlockExperimentalVMOptions -XX:+UseJVMCICompiler -XX:+UseParallelGC; EXTRA_PROBLEM_LISTS=ProblemList-graal.txt ProblemList-parallel.txt; VERBOSE=fail,error,time" LOG=debug
         if: matrix.compiler == 'graal' && matrix.gc == 'parallel'
 
       - name: Failed tests
