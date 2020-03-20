@@ -69,9 +69,13 @@ jobs:
           key: ${{env.JTREG_TAG}}
           path: jtreg/
 
+      - run: ccache --show-stats
+
       - run: sh configure ${{env.CONFIGURE_OPTIONS}} --with-debug-level=${{matrix.debuglevel}}
       - run: make jdk-image
       - run: make test-image
+
+      - run: ccache --show-stats
 
       - run: mkdir artifacts
       - run: tar -czvf artifacts/images.tar build/*/images/jdk/ build/*/images/test/
