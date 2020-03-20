@@ -179,6 +179,7 @@ jobs:
   test-results:
     needs: [ test ]
     runs-on: [ ubuntu-18.04 ]
+    if: always()
     steps:
       - uses: actions/download-artifact@v1.0.0
         with:
