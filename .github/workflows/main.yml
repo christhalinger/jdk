@@ -68,7 +68,7 @@ jobs:
       - run: make test-image
 
       - run: mkdir artifacts
-      - run: zip -r artifacts/images.zip build/*/images/jdk/ build/*/images/test/
+      - run: tar -czvf artifacts/images.tar build/*/images/jdk/ build/*/images/test/
       - uses: actions/upload-artifact@v1.0.0
         with:
           name: artifacts-${{matrix.os}}-${{matrix.debuglevel}}
@@ -151,7 +151,7 @@ jobs:
         with:
           name: artifacts-${{matrix.os}}-${{matrix.debuglevel}}
       - run: sh configure ${{env.CONFIGURE_OPTIONS}} --with-debug-level=${{matrix.debuglevel}}
-      - run: unzip artifacts-${{matrix.os}}-${{matrix.debuglevel}}/images.zip
+      - run: tar -xpvf artifacts-${{matrix.os}}-${{matrix.debuglevel}}/images.tar
         
       - run: make run-test-only TEST="${{matrix.test}}" JTREG="VM_OPTIONS=-XX:+UseG1GC; EXTRA_PROBLEM_LISTS=ProblemList-g1.txt; VERBOSE=fail,error,time" LOG=debug
         if: matrix.compiler == 'c2' && matrix.gc == 'g1'
