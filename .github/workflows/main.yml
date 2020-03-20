@@ -93,6 +93,7 @@ jobs:
 #          # jdk_svc group
 #          - jdk_management jdk_instrument jdk_jmx jdk_jdi jdk_jfr svc_tools  # 3m + 3m + 11m + 15m + 15m + 3m = 50m
 
+          - jdk_math
           - jdk_jfr
 
 #          # hotspot
