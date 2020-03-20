@@ -9,9 +9,8 @@ on:
 #    branches: [ master ]
 
 env:
-  APT_GET_PACKAGES: ccache libasound2-dev libcups2-dev libx11-dev libxext-dev libxrandr-dev libxrender-dev libxt-dev libxtst-dev
-  BREW_PACKAGES: ccache
-  CONFIGURE_OPTIONS: --enable-ccache --with-jtreg=$PWD/jtreg --with-log=info --with-native-debug-symbols=zipped --with-jvm-features=-epsilongc,-shenandoahgc
+  APT_GET_PACKAGES: libasound2-dev libcups2-dev libx11-dev libxext-dev libxrandr-dev libxrender-dev libxt-dev libxtst-dev
+  CONFIGURE_OPTIONS: --with-jtreg=$PWD/jtreg --with-log=info --with-native-debug-symbols=zipped --with-jvm-features=-epsilongc,-shenandoahgc
   JTREG_TAG: jtreg5.0-b01
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -52,8 +51,8 @@ jobs:
     steps:
       - uses: mstksg/get-package@v1
         with:
-          apt-get: ${{env.APT_GET_PACKAGES}}
-          brew: ${{env.BREW_PACKAGES}}
+          apt-get: ccache ${{env.APT_GET_PACKAGES}}
+          brew: ccache
       - uses: actions/setup-java@v1.3.0
         with:
           java-version: 13
@@ -71,7 +70,7 @@ jobs:
 
       - run: ccache --show-stats
 
-      - run: sh configure ${{env.CONFIGURE_OPTIONS}} --with-debug-level=${{matrix.debuglevel}}
+      - run: sh configure --enable-ccache ${{env.CONFIGURE_OPTIONS}} --with-debug-level=${{matrix.debuglevel}}
       - run: make jdk-image
       - run: make test-image
 
