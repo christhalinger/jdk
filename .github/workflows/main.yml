@@ -18,7 +18,7 @@ jobs:
   setup:
     runs-on: [ ubuntu-18.04 ]
     steps:
-      - uses: actions/cache@v1
+      - uses: actions/cache@v1.1.2
         id: cache-jtreg
         with:
           key: ${{env.JTREG_TAG}}
@@ -57,12 +57,12 @@ jobs:
         with:
           java-version: 13
       - uses: actions/checkout@v2
-      - uses: gerbal/always-cache@v1.0.3
+      - uses: actions/cache@v1.1.2
         id: ccache
         with:
           key: ccache-${{matrix.os}}
           path: ccache/
-      - uses: actions/cache@v1
+      - uses: actions/cache@v1.1.2
         id: cache-jtreg
         with:
           key: ${{env.JTREG_TAG}}
@@ -151,7 +151,7 @@ jobs:
         with:
           java-version: 13
       - uses: actions/checkout@v2
-      - uses: actions/cache@v1
+      - uses: actions/cache@v1.1.2
         id: cache-jtreg
         with:
           key: ${{env.JTREG_TAG}}
